@@ -8,7 +8,7 @@ pipeline{
     stages{
         stage('Build Docker file'){
             steps{
-                sh " docker build -t deepaksig/node-app-jenkins:${tagId} "
+                sh " docker build -t deepaksig/node-app-jenkins:${tagId} ."
                 sh " echo ${tagId}"
             }
         }
