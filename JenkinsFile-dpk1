@@ -16,6 +16,7 @@ pipeline{
 }
 
 def tagname(){
-    def commitId = sh(script: "git rev-parse --short HEAD" returnStdout:true).trim()
+    def commitId = sh(script: "git rev-parse --short HEAD" , returnStdout:true ).trim()
     return commitId
 }
+
