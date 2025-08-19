@@ -1,0 +1,21 @@
+pipeline{
+    agent{ label 'jenkins-slave'}
+
+    environment{
+        tagId = tagname()
+    }
+
+    stages{
+        stage('Build Docker file'){
+            steps{
+                sh " docker build -t deepaksig/node-app-jenkins:${tagId} "
+                sh " echo ${tagId}"
+            }
+        }
+    }
+}
+
+def tagname(){
+    def commitId = sh(script: "git rev-parse --short HEAD" returnStdout:true).trim()
+    return commitId
+}
