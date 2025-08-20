@@ -1,0 +1,46 @@
+pipeline{
+    agent{label 'jenkins-slave'}
+
+    environment{
+        def tag = fetchCommitId()
+    }
+
+    stages{
+        stage("Build Docker image"){
+            steps{
+                sh " docker build -t deepaksig/node-app-jenkins:${tag}"
+            }
+        }
+
+        stage("Push Docker image to Docker Hub"){
+            steps{
+                sh " docker push deepaksig/node-app-jenkins:${tag}"
+            }
+        }
+
+        stage("Deploy this Image to K8s cluster"){
+            steps{
+                sh " chmod +x changeTag.sh "
+                sh " ./changeTag.sh ${tag}"
+
+                sshagent(['aa245446-cc46-46b0-9e65-7b9505d3ea26']) {
+                        sh "scp -o StrictHostKeyChecking=no node-app-pod.yml services.yml deepakkumar@10.105.1.16:/home/deepakkumar/ "
+
+                        script{
+                            try{
+                                sh " ssh deepakkumar@10.105.1.16 kubectl apply -f ."
+                            }catch(error){
+                                sh " ssh deepakkumar@10.105.1.16 kubectl create -f ."
+                            }
+                        }
+                        }
+                
+            }
+        }
+    }
+}
+
+def fetchCommitId(){
+    def commitId = sh(script: "git log -n 1 --preety=format:'%h'", returnStdout:true ).trim()
+    return commitId
+}

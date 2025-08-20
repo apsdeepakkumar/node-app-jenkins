@@ -15,7 +15,7 @@ pipeline{
 
         stage('Push Image'){
             steps{
-                sh " docker push deepaksig/node-app-jenkins:${tagId}"
+                sh " docker push deepaksig/node-app-jenkins:${tagId}"               // if its a private repo better add credentials to jenkins and use it here 
             }
         }
     }
@@ -23,6 +23,7 @@ pipeline{
 
 def tagname(){
     def commitId = sh(script: "git rev-parse --short HEAD" , returnStdout:true ).trim()
+    // def commitId = sh(script : "git log -n 1 --preety=format:'%h'" , returnStdout:true).trim()       This also returns the short git commit 
     return commitId
 }
 
