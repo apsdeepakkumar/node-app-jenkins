@@ -41,6 +41,6 @@ pipeline{
 }
 
 def fetchCommitId(){
-    def commitId = sh(script: "git log -n 1 --preety=format:'%h'", returnStdout:true ).trim()
+    def commitId = sh(script: "git log -n 1 --pretty=format:'%h'", returnStdout:true ).trim()
     return commitId
 }
