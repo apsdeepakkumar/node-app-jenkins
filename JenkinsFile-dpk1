@@ -12,6 +12,12 @@ pipeline{
                 sh " echo ${tagId}"
             }
         }
+
+        stage('Push Image'){
+            steps{
+                sh " docker push deepaksig/node-app-jenkins:${tagId}"
+            }
+        }
     }
 }
 
